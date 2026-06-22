@@ -4,12 +4,12 @@ import { db } from "../lib/firebase";
 import { useAuth } from "../context/AuthContext";
 export function useGoal() {
   const { user } = useAuth();
-  const [goal, setGoalState] = useState(5000);
+  const [goal, setGoalState] = useState(50);
   useEffect(() => {
     if (!user) return;
     const ref = doc(db, "goals", user.uid);
     const unsub = onSnapshot(ref, (snap) => {
-      if (snap.exists()) setGoalState(snap.data().daily || 5000);
+      if (snap.exists()) setGoalState(snap.data().daily || 50);
     });
     return unsub;
   }, [user]);

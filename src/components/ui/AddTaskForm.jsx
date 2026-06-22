@@ -1,37 +1,47 @@
 import { useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import toast from "react-hot-toast";
-const TYPES = ["Revenue task","Delivery task","Client retention","Learning"];
+const CATEGORIES = ["Build","Learn","Ship","Connect","Rest"];
+const ENERGIES = ["High","Medium","Low"];
+const WIN_PTS = [3,5,7,10];
 export default function AddTaskForm({ onAdd }) {
   const [title, setTitle] = useState("");
-  const [value, setValue] = useState("");
-  const [type, setType] = useState("Revenue task");
+  const [winPoints, setWinPoints] = useState(5);
+  const [category, setCategory] = useState("Build");
+  const [energy, setEnergy] = useState("Medium");
   const [loading, setLoading] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title.trim() || !value) return;
+    if (!title.trim()) return;
     setLoading(true);
     try {
-      await onAdd({ title: title.trim(), value: parseInt(value), type });
-      setTitle(""); setValue("");
-      toast.success(`✅ Task added — KES ${parseInt(value).toLocaleString()} planned!`);
+      await onAdd({ title: title.trim(), winPoints: parseInt(winPoints), category, energy });
+      setTitle("");
+      toast.success(`🏆 +${winPoints} Win Points added!`);
     } catch { toast.error("Failed to add task"); }
     finally { setLoading(false); }
   };
   return (
     <form onSubmit={handleSubmit} style={{ display:"grid", gap:"0.75rem" }}>
-      <div style={{ display:"grid", gridTemplateColumns:"1.4fr 0.8fr", gap:"0.75rem" }}>
-        <div className="field"><label>Task name</label>
-          <input value={title} onChange={e=>setTitle(e.target.value)} placeholder="e.g. Deploy homepage" required /></div>
-        <div className="field"><label>KES value</label>
-          <input type="number" min="0" step="100" value={value} onChange={e=>setValue(e.target.value)} placeholder="2500" required /></div>
+      <div className="field"><label>Task name</label>
+        <input value={title} onChange={e=>setTitle(e.target.value)} placeholder="e.g. Deploy new feature" required /></div>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"0.75rem" }}>
+        <div className="field"><label>🏆 Win Points</label>
+          <select value={winPoints} onChange={e=>setWinPoints(e.target.value)}>
+            {WIN_PTS.map(p=><option key={p} value={p}>{p} pts</option>)}
+          </select></div>
+        <div className="field"><label>📂 Category</label>
+          <select value={category} onChange={e=>setCategory(e.target.value)}>
+            {CATEGORIES.map(c=><option key={c}>{c}</option>)}
+          </select></div>
+        <div className="field"><label>⚡ Energy</label>
+          <select value={energy} onChange={e=>setEnergy(e.target.value)}>
+            {ENERGIES.map(en=><option key={en}>{en}</option>)}
+          </select></div>
       </div>
-      <div style={{ display:"grid", gridTemplateColumns:"1fr auto", gap:"0.75rem", alignItems:"end" }}>
-        <div className="field"><label>Category</label>
-          <select value={type} onChange={e=>setType(e.target.value)}>{TYPES.map(t=><option key={t}>{t}</option>)}</select></div>
-        <button className="btn-gradient" type="submit" disabled={loading} style={{ marginBottom:"2px" }}>
-          <FiPlus size={16}/>{loading?"Adding…":"Add task"}</button>
-      </div>
+      <button className="btn-gradient" type="submit" disabled={loading}>
+        <FiPlus size={16}/>{loading?"Adding…":"Add task"}
+      </button>
     </form>
   );
 }
