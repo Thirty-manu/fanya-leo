@@ -1,128 +1,218 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { FiArrowRight, FiZap, FiTrendingUp, FiShield, FiBriefcase } from "react-icons/fi";
 
+/* Score system data — single source of truth */
 const SCORES = [
-  { emoji:"🏆", label:"Win Points", value:"48 / 50", color:"var(--amber)" },
-  { emoji:"🌱", label:"Growth", value:"Level 7", color:"var(--emerald)" },
-  { emoji:"⚡", label:"Energy", value:"On Fire", color:"var(--cyan)" },
-  { emoji:"🎯", label:"Impact", value:"Strong", color:"var(--violet)" },
+  { emoji:"🏆", key:"win",    label:"Win Points",   value:"48 pts",  sub:"of 50 goal",  color:"var(--gold)",    fill:"fill-gold" },
+  { emoji:"🌱", key:"growth", label:"Growth",        value:"Level 7", sub:"Build & Learn",color:"var(--sage)",    fill:"fill-sage" },
+  { emoji:"⚡", key:"energy", label:"Energy",        value:"On Fire", sub:"High intensity",color:"var(--sky)",   fill:"fill-lavender" },
+  { emoji:"🎯", key:"impact", label:"Impact",        value:"Strong",  sub:"Ship & Connect",color:"var(--clay)",  fill:"fill-warm" },
 ];
 
-const FEATURES = [
-  { icon:<FiZap size={20}/>, title:"Win Point System", desc:"Score every task 3–10 points based on difficulty. Hit your daily target.", color:"var(--indigo)", dim:"var(--indigo-dim)" },
-  { icon:<FiTrendingUp size={20}/>, title:"4 Growth Metrics", desc:"Track Win Points, Growth Level, Energy Units and Impact Score simultaneously.", color:"var(--violet)", dim:"var(--violet-dim)" },
-  { icon:<FiShield size={20}/>, title:"Private & Secure", desc:"Firebase Auth protects your data. No income tracking, no surveillance.", color:"var(--emerald)", dim:"var(--emerald-dim)" },
-  { icon:<FiBriefcase size={20}/>, title:"Built-in Job Board", desc:"Top freelance platforms curated for developers in Kenya.", color:"var(--cyan)", dim:"var(--cyan-dim)" },
+const CATEGORIES = [
+  { e:"🔨", cat:"Build",   desc:"Code · Design · Create",  color:"var(--lavender)", dim:"var(--lavender-soft)" },
+  { e:"📚", cat:"Learn",   desc:"Study · Research · Grow",  color:"var(--sage)",     dim:"var(--sage-soft)" },
+  { e:"🚀", cat:"Ship",    desc:"Launch · Deploy · Submit", color:"var(--sky)",      dim:"var(--sky-soft)" },
+  { e:"🤝", cat:"Connect", desc:"Clients · Network · Team", color:"var(--gold)",     dim:"var(--gold-soft)" },
+  { e:"😌", cat:"Rest",    desc:"Recharge · Reflect · Plan",color:"var(--clay)",     dim:"var(--clay-soft)" },
 ];
 
-const TASKS_DEMO = [
-  { title:"Deploy new feature", pts:10, cat:"Ship", done:true },
-  { title:"Study system design", pts:7, cat:"Learn", done:true },
-  { title:"Client call prep", pts:5, cat:"Connect", done:false },
+const DEMO_TASKS = [
+  { title:"Deployed new feature",   pts:10, cat:"Ship",    done:true },
+  { title:"Read system design docs",pts:7,  cat:"Learn",   done:true },
+  { title:"Client brief review",    pts:5,  cat:"Connect", done:false },
 ];
 
-const CAT_COLOR = { Ship:"badge-violet", Learn:"badge-emerald", Connect:"badge-amber", Build:"badge-indigo", Rest:"badge-pink" };
+const CAT_BADGE = {
+  Ship:"badge-sky", Learn:"badge-sage", Connect:"badge-gold",
+  Build:"badge-lavender", Rest:"badge-clay",
+};
 
 export default function LandingPage() {
   const { user } = useAuth();
+
   return (
     <div>
-      {/* Hero */}
-      <section style={{ padding:"6rem 0 5rem", position:"relative", overflow:"hidden" }}>
-        {/* Background blobs */}
-        <div style={{ position:"absolute", top:"-20%", right:"-10%", width:600, height:600, borderRadius:"50%", background:"radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%)", pointerEvents:"none" }}/>
-        <div style={{ position:"absolute", bottom:"-10%", left:"-5%", width:400, height:400, borderRadius:"50%", background:"radial-gradient(circle, rgba(6,182,212,0.08) 0%, transparent 70%)", pointerEvents:"none" }}/>
+      {/* ── HERO — Asymmetric, editorial ─────────────────── */}
+      <section style={{ padding:"var(--s-24) 0 var(--s-20)", position:"relative", overflow:"hidden" }}>
+        {/* Ambient light — intentionally off-center */}
+        <div style={{
+          position:"absolute", top:"-15%", right:"5%",
+          width:500, height:500, borderRadius:"50%",
+          background:"radial-gradient(circle, rgba(217,119,6,0.09) 0%, transparent 65%)",
+          pointerEvents:"none",
+        }}/>
+        <div style={{
+          position:"absolute", bottom:"0", left:"-5%",
+          width:350, height:350, borderRadius:"50%",
+          background:"radial-gradient(circle, rgba(129,140,248,0.07) 0%, transparent 65%)",
+          pointerEvents:"none",
+        }}/>
 
-        <div className="wrap" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"4rem", alignItems:"center" }}>
-          <div className="animate-fade-up">
-            <div className="section-label">Productivity · Growth · Momentum</div>
-            <h1 className="display" style={{ fontSize:"clamp(2.5rem,5vw,4.5rem)", marginBottom:"1.25rem", color:"var(--text)" }}>
-              Finish every day<br/>
-              <span className="grad-text">with proof you grew.</span>
-            </h1>
-            <p style={{ color:"var(--muted)", fontSize:"var(--text-lg)", lineHeight:1.7, marginBottom:"2rem", maxWidth:"46ch" }}>
-              Four powerful scoring systems that turn your daily tasks into measurable growth — Win Points, Growth Level, Energy Units, and Impact Score.
-            </p>
-            <div style={{ display:"flex", gap:"0.75rem", flexWrap:"wrap", marginBottom:"3rem" }}>
-              <Link to={user?"/dashboard":"/auth"} className="btn btn-primary">
-                {user?"Open Dashboard":"Get Started Free"} <FiArrowRight size={16}/>
-              </Link>
-              <Link to="/jobs" className="btn btn-ghost">Explore Job Board</Link>
-            </div>
-            <div style={{ display:"flex", alignItems:"center", gap:"1rem" }}>
-              <div style={{ display:"flex" }}>
-                {["#6366f1","#8b5cf6","#06b6d4","#10b981"].map((c,i)=>(
-                  <div key={i} style={{ width:30, height:30, borderRadius:"50%", background:c, border:"2px solid var(--bg)", marginLeft: i===0?0:-8, display:"grid", placeItems:"center", fontSize:"0.65rem", fontWeight:700, color:"#fff" }}>{["K","A","J","M"][i]}</div>
-                ))}
-              </div>
-              <span style={{ fontSize:"var(--text-sm)", color:"var(--muted)" }}>
-                Join builders growing every day
-              </span>
-            </div>
-          </div>
+        <div className="wrap">
+          {/* Eyebrow — mono, restrained */}
+          <p className="eyebrow anim-fade-up" style={{ marginBottom:"var(--s-5)" }}>
+            Productivity · Growth · Momentum · Kenya 🇰🇪
+          </p>
 
-          {/* Dashboard preview */}
-          <div style={{ display:"grid", gap:"0.875rem" }}>
-            {/* Score card */}
-            <div className="card glow-card-indigo">
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
-                <div>
-                  <div style={{ fontSize:"var(--text-xs)", color:"var(--muted)", fontWeight:600, textTransform:"uppercase", letterSpacing:"0.06em" }}>Today's Progress</div>
-                  <div className="display" style={{ fontSize:"1.75rem", marginTop:"0.2rem" }}>82% <span style={{ fontSize:"var(--text-sm)", color:"var(--muted)", fontWeight:400 }}>of daily goal</span></div>
-                </div>
-                <div style={{ width:48, height:48, borderRadius:"var(--radius-xl)", background:"var(--indigo-dim)", display:"grid", placeItems:"center", color:"var(--indigo-light)" }}>
-                  <FiZap size={22}/>
-                </div>
+          {/* Two-column asymmetric layout */}
+          <div style={{
+            display:"grid",
+            gridTemplateColumns:"1.1fr 0.9fr",
+            gap:"var(--s-16)",
+            alignItems:"center",
+          }} data-mobile-stack>
+
+            {/* Left — editorial headline */}
+            <div className="anim-fade-up stagger">
+              <h1 className="heading-xl" style={{ marginBottom:"var(--s-6)" }}>
+                Finish every day<br/>
+                with proof<br/>
+                <em className="text-gold" style={{ fontStyle:"italic" }}>you grew.</em>
+              </h1>
+              <p className="body-lg" style={{ maxWidth:"44ch", marginBottom:"var(--s-8)" }}>
+                Four scoring systems — Win Points, Growth Level, Energy Units, and Impact Score — that turn your daily work into measurable momentum.
+              </p>
+
+              {/* CTA row — asymmetric gap intentional */}
+              <div style={{ display:"flex", gap:"var(--s-3)", flexWrap:"wrap", marginBottom:"var(--s-10)" }}>
+                <Link to={user?"/dashboard":"/auth"} className="btn btn-primary btn-lg">
+                  {user ? "Open Dashboard" : "Start for free"} →
+                </Link>
+                <Link to="/jobs" className="btn btn-ghost btn-lg">
+                  Browse job board
+                </Link>
               </div>
-              <div className="progress-track">
-                <div className="progress-fill progress-indigo" style={{ width:"82%" }}/>
+
+              {/* Social proof — human, not generic "10,000 users" */}
+              <div style={{ display:"flex", alignItems:"center", gap:"var(--s-4)" }}>
+                <div style={{ display:"flex" }}>
+                  {["#d97706","#818cf8","#4ade80","#38bdf8","#fb7185"].map((c,i)=>(
+                    <div key={i} style={{
+                      width:28, height:28, borderRadius:"50%",
+                      background:c,
+                      border:"2px solid var(--ink)",
+                      marginLeft: i===0 ? 0 : -7,
+                      flexShrink:0,
+                    }}/>
+                  ))}
+                </div>
+                <p style={{ fontSize:"var(--t-sm)", color:"var(--stone)", lineHeight:1.4 }}>
+                  Builders in Nairobi growing every day
+                </p>
               </div>
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:"0.5rem", marginTop:"0.875rem" }}>
-                {SCORES.map(({emoji,label,value,color})=>(
-                  <div key={label} style={{ textAlign:"center", padding:"0.6rem", borderRadius:"var(--radius-lg)", background:"var(--surface-2)" }}>
-                    <div style={{ fontSize:"1.1rem" }}>{emoji}</div>
-                    <div style={{ fontSize:"0.7rem", color:"var(--muted)", marginTop:"0.15rem" }}>{label}</div>
-                    <div style={{ fontSize:"var(--text-xs)", fontWeight:700, color, marginTop:"0.1rem" }}>{value}</div>
+            </div>
+
+            {/* Right — live dashboard preview */}
+            <div style={{ display:"grid", gap:"var(--s-4)" }} className="anim-fade-up">
+              {/* Main score card */}
+              <div className="card" style={{
+                borderColor:"rgba(217,119,6,0.2)",
+                boxShadow:"var(--shadow-md), 0 0 40px rgba(217,119,6,0.08)",
+              }}>
+                <div style={{
+                  display:"flex",
+                  justifyContent:"space-between",
+                  alignItems:"flex-start",
+                  marginBottom:"var(--s-5)",
+                }}>
+                  <div>
+                    <p className="eyebrow" style={{ marginBottom:"var(--s-2)" }}>Today's Progress</p>
+                    <p className="heading-md">82% <span style={{ fontSize:"var(--t-sm)", color:"var(--stone)", fontFamily:"var(--font-sans)", fontWeight:400 }}>of daily goal</span></p>
                   </div>
-                ))}
-              </div>
-            </div>
+                  <span className="badge badge-gold">🔥 On streak</span>
+                </div>
 
-            {/* Tasks preview */}
-            <div className="card">
-              <div style={{ fontSize:"var(--text-xs)", color:"var(--muted)", fontWeight:600, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:"0.875rem" }}>Recent Tasks</div>
-              <div style={{ display:"grid", gap:"0.5rem" }}>
-                {TASKS_DEMO.map(({title,pts,cat,done})=>(
-                  <div key={title} style={{ display:"flex", alignItems:"center", gap:"0.75rem", padding:"0.6rem 0.75rem", borderRadius:"var(--radius-lg)", background:"var(--surface-2)" }}>
-                    <div style={{ width:18, height:18, borderRadius:6, background:done?"var(--emerald)":"var(--surface-4)", border:done?"none":"1px solid var(--border-bright)", flexShrink:0, display:"grid", placeItems:"center" }}>
-                      {done && <span style={{ fontSize:"0.6rem", color:"#fff", fontWeight:900 }}>✓</span>}
+                <div className="track track-md" style={{ marginBottom:"var(--s-5)" }}>
+                  <div className="fill fill-gold" style={{ width:"82%" }}/>
+                </div>
+
+                {/* 4 score chips */}
+                <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:"var(--s-2)" }}>
+                  {SCORES.map(({emoji,label,value,color})=>(
+                    <div key={label} style={{
+                      textAlign:"center",
+                      padding:"var(--s-3) var(--s-2)",
+                      borderRadius:"var(--r-lg)",
+                      background:"var(--ink-3)",
+                      border:"1px solid var(--line)",
+                    }}>
+                      <div style={{ fontSize:"1.1rem", marginBottom:"var(--s-1)" }}>{emoji}</div>
+                      <div style={{ fontSize:"0.68rem", color:"var(--stone)", fontFamily:"var(--font-mono)", marginBottom:"0.15rem" }}>{label}</div>
+                      <div style={{ fontSize:"var(--t-xs)", fontWeight:700, color, fontFamily:"var(--font-mono)" }}>{value}</div>
                     </div>
-                    <span style={{ flex:1, fontSize:"var(--text-sm)", fontWeight:500, textDecoration:done?"line-through":"none", color:done?"var(--muted)":"var(--text)" }}>{title}</span>
-                    <span className={`badge ${CAT_COLOR[cat]}`}>{cat}</span>
-                    <span style={{ fontSize:"var(--text-xs)", fontWeight:700, color:"var(--amber)", fontFamily:"var(--font-mono)" }}>+{pts}</span>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              </div>
+
+              {/* Task preview — compact */}
+              <div className="card" style={{ padding:"var(--s-5)" }}>
+                <p className="eyebrow" style={{ marginBottom:"var(--s-4)" }}>Recent Tasks</p>
+                <div style={{ display:"grid", gap:"var(--s-2)" }}>
+                  {DEMO_TASKS.map(({title,pts,cat,done})=>(
+                    <div key={title} style={{
+                      display:"flex", alignItems:"center", gap:"var(--s-3)",
+                      padding:"var(--s-3) var(--s-4)",
+                      borderRadius:"var(--r-lg)",
+                      background:"var(--ink-3)",
+                    }}>
+                      {/* Checkbox */}
+                      <div style={{
+                        width:18, height:18, borderRadius:5, flexShrink:0,
+                        background: done ? "var(--sage)" : "transparent",
+                        border: done ? "none" : "1.5px solid var(--fog)",
+                        display:"grid", placeItems:"center",
+                      }}>
+                        {done && <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#0e0f11" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                      </div>
+                      <span style={{
+                        flex:1, fontSize:"var(--t-sm)", fontWeight:500,
+                        color: done ? "var(--stone)" : "var(--cream)",
+                        textDecoration: done ? "line-through" : "none",
+                      }}>{title}</span>
+                      <span className={`badge ${CAT_BADGE[cat]}`}>{cat}</span>
+                      <span style={{ fontSize:"var(--t-xs)", fontWeight:700, color:"var(--gold)", fontFamily:"var(--font-mono)" }}>+{pts}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section style={{ padding:"5rem 0", borderTop:"1px solid var(--border)" }}>
+      <div className="rule wrap"/>
+
+      {/* ── FOUR SYSTEMS ────────────────────────────────── */}
+      <section style={{ padding:"var(--s-20) 0" }}>
         <div className="wrap">
-          <div style={{ marginBottom:"3rem" }}>
-            <div className="section-label">Why Fanya Leo</div>
-            <h2 className="display" style={{ fontSize:"clamp(1.75rem,3vw,2.5rem)" }}>Everything you need to win your day</h2>
+          {/* Intentionally left-aligned, not centered */}
+          <div style={{ maxWidth:"520px", marginBottom:"var(--s-12)" }}>
+            <p className="eyebrow" style={{ marginBottom:"var(--s-3)" }}>The scoring system</p>
+            <h2 className="heading-lg">Four metrics.<br/>One honest view of your day.</h2>
           </div>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:"1rem" }}>
-            {FEATURES.map(({icon,title,desc,color,dim})=>(
-              <div key={title} className="card card-hover" style={{ display:"flex", gap:"1rem", alignItems:"flex-start" }}>
-                <div style={{ width:44, height:44, borderRadius:"var(--radius-lg)", background:dim, color, display:"grid", placeItems:"center", flexShrink:0, marginTop:2 }}>{icon}</div>
-                <div>
-                  <h3 style={{ fontFamily:"var(--font-display)", fontWeight:700, marginBottom:"0.35rem" }}>{title}</h3>
-                  <p style={{ color:"var(--muted)", fontSize:"var(--text-sm)", lineHeight:1.6 }}>{desc}</p>
+
+          {/* Asymmetric 2+2 grid — not a boring 4-col row */}
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"var(--s-4)" }}>
+            {SCORES.map(({emoji,label,value,sub,color,fill},i)=>(
+              <div key={label} className="card card-lift" style={{
+                /* First card slightly larger — editorial hierarchy */
+                gridColumn: i===0 ? "span 1" : "span 1",
+                borderTop:`2px solid ${color}`,
+              }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"var(--s-4)" }}>
+                  <span style={{ fontSize:"2rem" }}>{emoji}</span>
+                  <span style={{ fontFamily:"var(--font-mono)", fontSize:"var(--t-xs)", color:"var(--stone)" }}>{sub}</span>
+                </div>
+                <p style={{ fontFamily:"var(--font-serif)", fontSize:"var(--t-xl)", color, marginBottom:"var(--s-2)" }}>{label}</p>
+                <p className="body-sm">
+                  {label==="Win Points" && "Score 3–10 points per task. Hit 50 to complete your day."}
+                  {label==="Growth" && "Level up through Learn and Build tasks. Track your trajectory."}
+                  {label==="Energy" && "High, Medium or Low intensity per task. Stay in the zone."}
+                  {label==="Impact" && "Ship and Connect tasks boost your real-world impact score."}
+                </p>
+                <div className="track" style={{ marginTop:"var(--s-4)" }}>
+                  <div className={`fill ${fill}`} style={{ width: ["82%","65%","90%","70%"][i] }}/>
                 </div>
               </div>
             ))}
@@ -130,42 +220,57 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Categories */}
-      <section style={{ padding:"4rem 0", borderTop:"1px solid var(--border)", background:"var(--surface)" }}>
+      <div className="rule wrap"/>
+
+      {/* ── CATEGORIES ──────────────────────────────────── */}
+      <section style={{ padding:"var(--s-20) 0", background:"var(--ink-2)", borderTop:"1px solid var(--line)", borderBottom:"1px solid var(--line)" }}>
         <div className="wrap">
-          <div style={{ marginBottom:"2.5rem" }}>
-            <div className="section-label">Task Categories</div>
-            <h2 className="display" style={{ fontSize:"clamp(1.75rem,3vw,2.5rem)" }}>Five categories. Balanced day.</h2>
-          </div>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:"0.875rem" }}>
-            {[
-              {e:"🔨",cat:"Build",desc:"Code, design, create",color:"var(--indigo)",dim:"var(--indigo-dim)"},
-              {e:"📚",cat:"Learn",desc:"Study, research, grow",color:"var(--emerald)",dim:"var(--emerald-dim)"},
-              {e:"🚀",cat:"Ship",desc:"Launch, deploy, submit",color:"var(--violet)",dim:"var(--violet-dim)"},
-              {e:"🤝",cat:"Connect",desc:"Clients, network, team",color:"var(--amber)",dim:"var(--amber-dim)"},
-              {e:"😌",cat:"Rest",desc:"Recharge and reflect",color:"var(--pink)",dim:"var(--pink-dim)"},
-            ].map(({e,cat,desc,color,dim})=>(
-              <div key={cat} className="card-sm" style={{ textAlign:"center", borderTop:`2px solid ${color}`, paddingTop:"1.25rem" }}>
-                <div style={{ width:44, height:44, borderRadius:"var(--radius-xl)", background:dim, display:"grid", placeItems:"center", margin:"0 auto 0.75rem", fontSize:"1.4rem" }}>{e}</div>
-                <div style={{ fontWeight:700, color, fontSize:"var(--text-sm)", marginBottom:"0.25rem" }}>{cat}</div>
-                <div style={{ fontSize:"var(--text-xs)", color:"var(--muted)" }}>{desc}</div>
-              </div>
-            ))}
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 2fr", gap:"var(--s-12)", alignItems:"center" }}>
+            <div>
+              <p className="eyebrow" style={{ marginBottom:"var(--s-3)" }}>Task types</p>
+              <h2 className="heading-lg">Five categories.<br/>A balanced day.</h2>
+              <p className="body-sm" style={{ marginTop:"var(--s-4)" }}>Each category feeds different scores. Mix them for a rounded, sustainable day of work.</p>
+            </div>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:"var(--s-3)" }}>
+              {CATEGORIES.map(({e,cat,desc,color,dim})=>(
+                <div key={cat} className="card-sm" style={{
+                  textAlign:"center",
+                  borderTop:`2px solid ${color}`,
+                  paddingTop:"var(--s-5)",
+                }}>
+                  <div style={{
+                    width:44, height:44, borderRadius:"var(--r-xl)",
+                    background:dim, margin:"0 auto var(--s-3)",
+                    display:"grid", placeItems:"center", fontSize:"1.4rem",
+                  }}>{e}</div>
+                  <p style={{ fontWeight:700, fontSize:"var(--t-sm)", color, marginBottom:"var(--s-2)" }}>{cat}</p>
+                  <p style={{ fontSize:"var(--t-xs)", color:"var(--stone)", lineHeight:1.5 }}>{desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section style={{ padding:"6rem 0", textAlign:"center", position:"relative", overflow:"hidden" }}>
-        <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse 60% 60% at 50% 50%, rgba(99,102,241,0.08) 0%, transparent 70%)", pointerEvents:"none" }}/>
-        <div className="wrap" style={{ position:"relative", maxWidth:560, margin:"0 auto" }}>
-          <div className="section-label" style={{ textAlign:"center" }}>Start today</div>
-          <h2 className="display" style={{ fontSize:"clamp(2rem,4vw,3rem)", marginBottom:"1rem" }}>
-            Finish the day with <span className="grad-text">proof you grew.</span>
+      {/* ── CTA ─────────────────────────────────────────── */}
+      <section style={{ padding:"var(--s-24) 0", position:"relative", overflow:"hidden" }}>
+        <div style={{
+          position:"absolute", inset:0,
+          background:"radial-gradient(ellipse 50% 70% at 50% 50%, rgba(217,119,6,0.06) 0%, transparent 70%)",
+          pointerEvents:"none",
+        }}/>
+        {/* Intentionally narrow — draws the eye */}
+        <div className="wrap-narrow" style={{ textAlign:"center", position:"relative" }}>
+          <p className="eyebrow" style={{ marginBottom:"var(--s-4)" }}>Ready?</p>
+          <h2 className="heading-lg" style={{ marginBottom:"var(--s-5)" }}>
+            End your day knowing<br/>
+            <em className="text-gold" style={{ fontStyle:"italic" }}>exactly how much you grew.</em>
           </h2>
-          <p style={{ color:"var(--muted)", marginBottom:"2rem" }}>Free forever. No income tracking. Just you and your growth.</p>
-          <Link to={user?"/dashboard":"/auth"} className="btn btn-primary animate-pulse-glow" style={{ fontSize:"var(--text-base)", minHeight:50, padding:"0 2rem", margin:"0 auto" }}>
-            {user?"Go to Dashboard":"Create Free Account"} <FiArrowRight size={18}/>
+          <p className="body-lg" style={{ marginBottom:"var(--s-8)" }}>
+            Free forever. No income tracking. No surveillance. Just you and your growth.
+          </p>
+          <Link to={user?"/dashboard":"/auth"} className="btn btn-primary btn-lg anim-breathe">
+            {user ? "Go to Dashboard" : "Create free account"} →
           </Link>
         </div>
       </section>
