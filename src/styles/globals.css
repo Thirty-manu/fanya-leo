@@ -470,3 +470,143 @@ select.input option { background: var(--ink-3); }
   [data-grid="2"] { grid-template-columns: 1fr !important; }
   .heading-xl { font-size: clamp(2rem, 9vw, 2.8rem); }
 }
+
+/* ═══════════════════════════════════════════════
+   MOBILE RESPONSIVE — Complete Fix
+   ═══════════════════════════════════════════════ */
+
+/* Prevent all horizontal overflow */
+html, body {
+  overflow-x: hidden !important;
+  width: 100% !important;
+}
+
+#root {
+  width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+@media (max-width: 768px) {
+
+  /* ── Hamburger visible on mobile ── */
+  #hamburger {
+    display: flex !important;
+  }
+
+  .hide-mobile {
+    display: none !important;
+  }
+
+  /* ── .wrap padding ── */
+  .wrap, .wrap-narrow {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* ── Hero 2-col → 1-col ── */
+  [data-mobile-stack] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Dashboard 4 score cards → 2 cols ── */
+  [style*="repeat(4,1fr)"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* ── Dashboard main layout 1.15fr 0.85fr → 1 col ── */
+  [style*="1.15fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Landing: 4-col scores → 2 cols ── */
+  [style*="1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Landing: 5 categories → 2 cols ── */
+  [style*="repeat(5,1fr)"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* ── Landing: 1fr 2fr categories section → 1 col ── */
+  [style*="1fr 2fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Jobs: 3 cols → 1 col ── */
+  [style*="repeat(3,1fr)"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Headings scale down ── */
+  .heading-xl {
+    font-size: clamp(1.8rem, 9vw, 3rem) !important;
+  }
+  .heading-lg {
+    font-size: clamp(1.4rem, 7vw, 2.2rem) !important;
+  }
+  .heading-md {
+    font-size: clamp(1.1rem, 5vw, 1.6rem) !important;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 8vw, 3rem) !important;
+  }
+
+  /* ── Sections padding ── */
+  section {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* ── Cards full width ── */
+  .card, .card-sm, .card-lift {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* ── Hero buttons stack ── */
+  [style*="flexWrap"] {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  .btn-lg {
+    width: 100% !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  /* ── Mobile Nav bar ── */
+  .mobile-nav {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 200 !important;
+    background: var(--ink-2) !important;
+    border-top: 1px solid var(--line) !important;
+    padding: 0.5rem 1rem env(safe-area-inset-bottom, 0.5rem) !important;
+    justify-content: space-around !important;
+  }
+
+  /* ── Add bottom padding so content not hidden behind mobile nav ── */
+  main {
+    padding-bottom: 80px !important;
+  }
+
+  /* ── Footer stack ── */
+  footer .wrap > div:first-child {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Hide mobile nav on desktop */
+@media (min-width: 769px) {
+  .mobile-nav {
+    display: none !important;
+  }
+}
