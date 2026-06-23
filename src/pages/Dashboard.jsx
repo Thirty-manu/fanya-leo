@@ -1,3 +1,4 @@
+import { Trophy, Sprout, Zap, Target, CheckCircle } from 'lucide-react'
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useTasks } from "../hooks/useTasks";
@@ -37,10 +38,10 @@ export default function Dashboard() {
         {/* 4 Score Cards */}
         <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:"0.75rem", marginBottom:"2rem" }}>
           {[
-            { emoji:"🏆", label:"Win Points", value:`${winPoints} / ${goal}`, color:"var(--warning)" },
-            { emoji:"🌱", label:"Growth Level", value:`Level ${growthLevel}`, color:"var(--success)" },
-            { emoji:"⚡", label:"Energy", value:getEnergyLabel(energyScore), color:"var(--primary)" },
-            { emoji:"🎯", label:"Impact", value:getImpactLabel(impactScore), color:"var(--accent)" },
+            { icon:"Trophy", label:"Win Points", value:`${winPoints} / ${goal}`, color:"var(--warning)" },
+            { icon:"Sprout", label:"Growth Level", value:`Level ${growthLevel}`, color:"var(--success)" },
+            { icon:"Zap", label:"Energy", value:getEnergyLabel(energyScore), color:"var(--primary)" },
+            { icon:"Target", label:"Impact", value:getImpactLabel(impactScore), color:"var(--accent)" },
           ].map(({emoji,label,value,color})=>(
             <div key={label} className="card-sm" style={{ textAlign:"center" }}>
               <div style={{ fontSize:"1.5rem", marginBottom:"0.25rem" }}>{emoji}</div>
@@ -85,10 +86,10 @@ export default function Dashboard() {
             <div className="card">
               <h3 style={{ fontFamily:"var(--font-display)", fontSize:"var(--text-lg)", marginBottom:"1rem" }}>Score Breakdown</h3>
               {[
-                { emoji:"🏆", label:"Win Points", value:`${winPoints}pts`, bar: Math.min((winPoints/goal)*100,100), color:"var(--warning)" },
-                { emoji:"🌱", label:"Growth", value:`Lv ${growthLevel}`, bar: Math.min(growthLevel*10,100), color:"var(--success)" },
-                { emoji:"⚡", label:"Energy", value:`${energyScore} units`, bar: Math.min(energyScore*10,100), color:"var(--primary)" },
-                { emoji:"🎯", label:"Impact", value:`${impactScore} pts`, bar: Math.min(impactScore*8,100), color:"var(--accent)" },
+                { icon:"Trophy", label:"Win Points", value:`${winPoints}pts`, bar: Math.min((winPoints/goal)*100,100), color:"var(--warning)" },
+                { icon:"Sprout", label:"Growth", value:`Lv ${growthLevel}`, bar: Math.min(growthLevel*10,100), color:"var(--success)" },
+                { icon:"Zap", label:"Energy", value:`${energyScore} units`, bar: Math.min(energyScore*10,100), color:"var(--primary)" },
+                { icon:"Target", label:"Impact", value:`${impactScore} pts`, bar: Math.min(impactScore*8,100), color:"var(--accent)" },
               ].map(({emoji,label,value,bar,color})=>(
                 <div key={label} style={{ marginBottom:"0.85rem" }}>
                   <div style={{ display:"flex", justifyContent:"space-between", marginBottom:"0.3rem" }}>
