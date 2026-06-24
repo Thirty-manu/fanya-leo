@@ -7,7 +7,7 @@ import { useStreak } from "../hooks/useStreak";
 import AddTaskForm from "../components/ui/AddTaskForm";
 import TaskItem from "../components/ui/TaskItem";
 import Meter from "../components/ui/Meter";
-import { FiEdit2, FiCheck, FiFlame } from "react-icons/fi";
+import { FiEdit2, FiCheck, FiZap } from "react-icons/fi";
 import toast from "react-hot-toast";
 import confetti from "canvas-confetti";
 
@@ -70,7 +70,7 @@ export default function Dashboard() {
             border: `1px solid ${streakColor}`,
             flexShrink:0,
           }}>
-            <FiFlame size={16} color={streakColor} />
+            <FiZap size={16} color={streakColor} />
             <span style={{ fontFamily:"var(--font-mono)", fontSize:"0.82rem", fontWeight:700, color:streakColor }}>
               {streak} day{streak !== 1 ? "s" : ""} streak
             </span>
